@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{% if book %}Edit Book{% else %}Add Book{% endif %} — LibraryApp{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-wrap">
+    <h1>{% if book %}Edit Book{% else %}Add New Book{% endif %}</h1>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.field.widget.input_type == 'checkbox' %}
+          <div class="checkbox-row">
+            {{ field }}
+            <span style="font-size:.9rem;color:var(--text-sub)">{{ field.help_text }}</span>
+          </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.errors %}
+          {% for error in field.errors %}
+          <p class="form-error">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% if form.non_field_errors %}
+      <div class="form-error" style="margin-bottom:.75rem">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          {% if book %}Save Changes{% else %}Add Book{% endif %}
+        </button>
+        <a href="{% if book %}{% url 'book_detail' book.pk %}{% else %}{% url 'catalog' %}{% endif %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

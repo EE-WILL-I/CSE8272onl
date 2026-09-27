@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ book.title }} — LibraryApp{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="breadcrumb">
+    <a href="{% url 'index' %}">Home</a> <span>/</span>
+    <a href="{% url 'catalog' %}">Catalog</a> <span>/</span>
+    {{ book.title }}
+  </div>
+
+  <div class="book-detail">
+    <div class="book-cover-lg">
+      {% if book.cover %}
+        <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+      {% else %}
+        <div class="cover-placeholder-lg">📖</div>
+      {% endif %}
+    </div>
+
+    <div class="book-info">
+      <h1>{{ book.title }}</h1>
+
+      <div class="book-meta">
+        <span>✍ {{ book.author.name }}</span>
+        {% if book.category %}<span>🏷 {{ book.category.name }}</span>{% endif %}
+        {% if book.year %}<span>📅 {{ book.year }}</span>{% endif %}
+        <span>
+          {% if book.available %}
+            <span class="badge badge-green">Available</span>
+          {% else %}
+            <span class="badge badge-red">Unavailable</span>
+          {% endif %}
+        </span>
+      </div>
+
+      {% if book.description %}
+      <p class="book-description">{{ book.description }}</p>
+      {% endif %}
+
+      <div class="book-actions">
+        <a href="{% url 'book_edit' book.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'book_delete' book.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'catalog' %}" class="btn btn-secondary">&larr; Back to Catalog</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

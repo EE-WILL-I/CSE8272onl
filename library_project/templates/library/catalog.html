@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Catalog — LibraryApp{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="breadcrumb">
+    <a href="{% url 'index' %}">Home</a> <span>/</span> Catalog
+  </div>
+
+  <div class="catalog-layout">
+    <aside class="sidebar">
+      <h3>Categories</h3>
+      <ul class="filter-list">
+        <li>
+          <a href="{% url 'catalog' %}{% if q %}?q={{ q }}{% endif %}"
+             {% if not active_category %}class="active"{% endif %}>All</a>
+        </li>
+        {% for cat in categories %}
+        <li>
+          <a href="{% url 'catalog' %}?category={{ cat.slug }}{% if q %}&q={{ q }}{% endif %}"
+             {% if active_category == cat.slug %}class="active"{% endif %}>
+            {{ cat.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </aside>
+
+    <section>
+      <form class="search-bar" method="get" action="{% url 'catalog' %}">
+        {% if active_category %}
+        <input type="hidden" name="category" value="{{ active_category }}">
+        {% endif %}
+        <input type="text" name="q" value="{{ q }}" placeholder="Search by title or author…" aria-label="Search books">
+        <button type="submit" class="btn btn-primary">Search</button>
+        {% if q %}
+        <a href="{% url 'catalog' %}{% if active_category %}?category={{ active_category }}{% endif %}" class="btn btn-secondary">Clear</a>
+        {% endif %}
+      </form>
+
+      <p class="results-info">
+        {% if q %}Results for "<strong>{{ q }}</strong>": {% endif %}
+        {{ books|length }} book{{ books|length|pluralize }}
+      </p>
+
+      {% if books %}
+      <div class="books-grid">
+        {% for book in books %}
+        <a href="{% url 'book_detail' book.pk %}" class="book-card" style="text-decoration:none;color:inherit">
+          <div class="book-card-cover">
+            {% if book.cover %}
+              <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+            {% else %}
+              <div class="cover-placeholder">📖</div>
+            {% endif %}
+          </div>
+          <div class="book-card-body">
+            <h3>{{ book.title }}</h3>
+            <p class="author">{{ book.author.name }}</p>
+            {% if book.category %}
+            <span class="category-tag">{{ book.category.name }}</span>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <p>No books found.</p>
+        <a href="{% url 'catalog' %}" class="btn btn-secondary">Clear filters</a>
+      </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

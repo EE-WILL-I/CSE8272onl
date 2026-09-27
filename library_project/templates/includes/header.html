@@ -1,0 +1,20 @@
+{% load static %}
+<header>
+  <div class="container header-inner">
+    <a href="{% url 'index' %}" class="logo">📚 LibraryApp</a>
+
+    <button class="btn-menu" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="main-nav">
+      <a href="{% url 'index' %}" {% if request.resolver_match.url_name == 'index' %}class="active"{% endif %}>Home</a>
+      <a href="{% url 'catalog' %}" {% if request.resolver_match.url_name == 'catalog' %}class="active"{% endif %}>Catalog</a>
+      <a href="{% url 'book_create' %}" {% if request.resolver_match.url_name == 'book_create' %}class="active"{% endif %}>Add Book</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-icon" id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">☾</button>
+    </div>
+  </div>
+</header>

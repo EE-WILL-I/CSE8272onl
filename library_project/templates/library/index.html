@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}LibraryApp — Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <h1>Your Online Library</h1>
+    <p>Discover books, manage your reading list, and explore our catalog of titles.</p>
+    <a href="{% url 'catalog' %}" class="btn btn-primary">Browse Catalog</a>
+  </div>
+</section>
+
+<div class="container">
+  <div class="section-head">
+    <h2>Recently Added</h2>
+    <a href="{% url 'catalog' %}">View all &rarr;</a>
+  </div>
+
+  {% if books %}
+  <div class="books-grid">
+    {% for book in books %}
+    <a href="{% url 'book_detail' book.pk %}" class="book-card" style="text-decoration:none;color:inherit">
+      <div class="book-card-cover">
+        {% if book.cover %}
+          <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+        {% else %}
+          <div class="cover-placeholder">📖</div>
+        {% endif %}
+      </div>
+      <div class="book-card-body">
+        <h3>{{ book.title }}</h3>
+        <p class="author">{{ book.author.name }}</p>
+        {% if book.category %}
+        <span class="category-tag">{{ book.category.name }}</span>
+        {% endif %}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No books yet.</p>
+    <a href="{% url 'book_create' %}" class="btn btn-primary">Add first book</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
